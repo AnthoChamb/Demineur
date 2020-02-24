@@ -15,7 +15,7 @@ namespace Demineur {
         }
 
         /// <summary>Nom du joueur.</summary>
-        /// /// <exception cref="ArgumentNullException">Le nom du joueur ne peut pas être la valeur null</exception>
+        /// <exception cref="ArgumentNullException">Le nom du joueur ne peut pas être la valeur null</exception>
         public string Nom { get => nom; set => nom = value ?? throw new ArgumentNullException(); }
         /// <summary>Nombre de victoire du joueurs.</summary>
         public uint Victoire { get => victoire; }
