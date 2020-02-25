@@ -35,5 +35,11 @@ namespace Demineur {
         /// <param name="ligne">Indice de la ligne choisie</param>
         /// <param name="col">Indice de la colonne choisie</param>
         public static void CaseOuverte(int ligne, int col) => Console.WriteLine("La case à la ligne numéro " + ligne + " de la colonne numéro " + col + " est déjà ouverte. Veuillez entrer une autre paire de colonne et de ligne.");
+
+        /// <summary>Informe l'utilisateur qu'il a ouvert une mine.</summary>
+        public static void MineOuverte() => Console.WriteLine("Vous avez ouvert une mine. Partie terminée.");
+
+        /// <summary>Informe l'utilisateur qu'il a gagné la partie.</summary>
+        public static void PartieGagne() => Console.WriteLine("Félicitations! Vous avez gagné la partie.");
     }
 }

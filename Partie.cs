@@ -47,44 +47,53 @@ namespace Demineur {
                     i++;
         }
 
-        /// <summary>Joue un coups.</summary>
+        /// <summary>Joue la partie.</summary>
         public void Jouer() {
-            MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
-            MenuPartie.DemandeJoueur();
-            byte ligne, col; // Entrées d'utilisateur pour la ligne et la colonne désirée
+            while (!plateau.Gagne()) {
+                MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
+                MenuPartie.DemandeJoueur();
+                byte ligne, col; // Entrées d'utilisateur pour la ligne et la colonne désirée
 
-            do {
-                ligne = col = 0;
-                string[] entree = MenuPartie.EntreeJoueur().Split(' ');
+                do {
+                    ligne = col = 0;
+                    string[] entree = MenuPartie.EntreeJoueur().Split(' ');
 
-                try {
-                    col = byte.Parse(entree[0]);
-                    if (col < 1 || col > plateau.Largeur)
+                    try {
+                        col = byte.Parse(entree[0]);
+                        if (col < 1 || col > plateau.Largeur)
+                            MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
+                    } catch (FormatException) {
                         MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
-                } catch (FormatException) {
-                    MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
-                } catch (OverflowException) {
-                    MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
-                }
-
-                try {
-                    ligne = byte.Parse(entree[1]);
-                    if (ligne < 1 || ligne > plateau.Largeur) {
-                        MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
-                    } else if (col <= plateau.Largeur && col > 0 && plateau[ligne - 1, col - 1].Ouverte) { // La case désirée ne peut pas être déjà occupée, cela est vérifié que si le numéro de colonne est valide
-                        MenuPartie.CaseOuverte(ligne, col);
-                        col = 0; // Le numéro de colonne ne remplit plus la condition de sortie
+                    } catch (OverflowException) {
+                        MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
                     }
-                } catch (FormatException) {
-                    MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
-                } catch (OverflowException) {
-                    MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
-                } catch (IndexOutOfRangeException) {
-                    MenuPartie.ErreurEspace();
-                }
-            } while (col < 1 || col > plateau.Largeur || ligne < 1 || ligne > plateau.Largeur); // La colonne et la ligne désirée doit être un nombre valide
 
-            plateau.OuvrirCase(ligne - 1, col - 1);
+                    try {
+                        ligne = byte.Parse(entree[1]);
+                        if (ligne < 1 || ligne > plateau.Largeur) {
+                            MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
+                        } else if (col <= plateau.Largeur && col > 0 && plateau[ligne - 1, col - 1].Ouverte) { // La case désirée ne peut pas être déjà occupée, cela est vérifié que si le numéro de colonne est valide
+                            MenuPartie.CaseOuverte(ligne, col);
+                            col = 0; // Le numéro de colonne ne remplit plus la condition de sortie
+                        }
+                    } catch (FormatException) {
+                        MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
+                    } catch (OverflowException) {
+                        MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
+                    } catch (IndexOutOfRangeException) {
+                        MenuPartie.ErreurEspace();
+                    }
+                } while (col < 1 || col > plateau.Largeur || ligne < 1 || ligne > plateau.Largeur); // La colonne et la ligne désirée doit être un nombre valide
+
+                plateau.OuvrirCase(ligne - 1, col - 1);
+                if (plateau[ligne - 1, col - 1].Mine) {
+                    MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
+                    MenuPartie.MineOuverte();
+                    return;
+                }
+            }
+            MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
+            MenuPartie.PartieGagne();
         }
     }
 }

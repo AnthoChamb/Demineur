@@ -68,5 +68,15 @@ namespace Demineur {
                                 OuvrirCase(ligne + i, col + j);
                         } catch (IndexOutOfRangeException) { }
         }
+
+        /// <summary>Évalue si le joueur a gagné.</summary>
+        /// <returns>Retourne si le joueur a gagné</returns>
+        public bool Gagne() {
+            for (byte ligne = 0; ligne < Largeur; ligne++)
+                for (byte col = 0; col < Largeur; col++)
+                    if (!plateau[ligne, col].Ouverte && !plateau[ligne, col].Mine)
+                        return false;
+            return true;
+        }
     }
 }
