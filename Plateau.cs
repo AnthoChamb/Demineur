@@ -45,8 +45,8 @@ namespace Demineur {
                 return false;
 
             plateau[ligne, col].Mine = true;
-            for (int i = -1; i <= 1; i += 2)
-                for (int j = -1; j <= 1; j += 2)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     try {
                         if (!plateau[ligne + i, col + j].Mine)
                             plateau[ligne + i, col + j].AjouteMine();
@@ -61,8 +61,8 @@ namespace Demineur {
             plateau[ligne, col].Ouverte = true;
 
             if (plateau[ligne, col].Compte == 0 && !plateau[ligne, col].Mine)
-                for (sbyte i = -1; i <= 1; i += 2)
-                    for (sbyte j = -1; j <= 1; j += 2)
+                for (sbyte i = -1; i <= 1; i++)
+                    for (sbyte j = -1; j <= 1; j++)
                         try {
                             if (!plateau[ligne + i, col + j].Mine && !plateau[ligne + i, col + j].Ouverte)
                                 OuvrirCase(ligne + i, col + j);
