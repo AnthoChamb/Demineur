@@ -87,6 +87,7 @@ namespace Demineur {
 
                 plateau.OuvrirCase(ligne - 1, col - 1);
                 if (plateau[ligne - 1, col - 1].Mine) {
+                    plateau.RevelerMines();
                     MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
                     MenuPartie.MineOuverte();
                     return;

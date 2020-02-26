@@ -45,8 +45,8 @@ namespace Demineur {
                 return false;
 
             plateau[ligne, col].Mine = true;
-            for (int i = -1; i <= 1; i++)
-                for (int j = -1; j <= 1; j++)
+            for (sbyte i = -1; i <= 1; i++)
+                for (sbyte j = -1; j <= 1; j++)
                     try {
                         if (!plateau[ligne + i, col + j].Mine)
                             plateau[ligne + i, col + j].AjouteMine();
@@ -77,6 +77,14 @@ namespace Demineur {
                     if (!plateau[ligne, col].Ouverte && !plateau[ligne, col].Mine)
                         return false;
             return true;
+        }
+
+        /// <summary>Ouvre les cases contenant une mine.</summary>
+        public void RevelerMines() {
+            for (byte ligne = 0; ligne < Largeur; ligne++)
+                for (byte col = 0; col < Largeur; col++)
+                    if (plateau[ligne, col].Mine)
+                        plateau[ligne, col].Ouverte = true;
         }
     }
 }
