@@ -7,17 +7,19 @@ namespace Demineur {
     public class Partie {
         Joueur joueur;
         Plateau plateau;
+        Difficulte difficulte;
+        Taille taille;
 
         /// <summary>Niveau de difficulté de la partie</summary>
         public enum Difficulte : byte {
             /// <summary>Niveau de difficulté facile</summary>
             FACILE = 10,
             /// <summary>Niveau de difficulté intermédiaire</summary>
-            INTERMEDIAIRE = 25,
+            INTERMEDIAIRE = 15,
             /// <summary>Niveau de difficulté difficile</summary>
-            DIFFICILE = 50,
+            DIFFICILE = 20,
             /// <summary>Niveau de difficulté extrême</summary>
-            EXTREME = 75
+            EXTREME = 30
         }
             
         /// <summary>Taille du plateau de la partie</summary>
@@ -38,6 +40,8 @@ namespace Demineur {
         public Partie(Joueur joueur, Difficulte difficulte, Taille taille) {
             this.joueur = joueur ?? throw new ArgumentNullException();
             plateau = new Plateau((byte) taille);
+            this.difficulte = difficulte;
+            this.taille = taille;
 
             double nbMines = (double) difficulte / 100 * (byte) taille * (byte) taille;
             Random alea = new Random();

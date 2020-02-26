@@ -14,6 +14,7 @@ namespace Demineur {
         /// <summary>Démarre l'exécution du jeu de démineur.</summary>
         public void Demarrer() {
             partie = new Partie(new Joueur("Anthony"), Partie.Difficulte.FACILE, Partie.Taille.PETIT);
+            
             partie.Jouer();
         }
     }
