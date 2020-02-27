@@ -5,9 +5,8 @@
         {
           "files": [
             "**.csproj",
-            "**.cs"
           ],
-          "src": "P:\\Prog III\\Travaux pratiques\\Demineur\\Demineur"
+          "src": "./"
         }
       ],
       "dest": "api"

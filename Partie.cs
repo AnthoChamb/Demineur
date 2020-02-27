@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Demineur {
     /// <summary>Classe d'une partie de démineur.</summary>
     public class Partie {
-        Joueur joueur;
+        readonly Joueur joueur;
         Plateau plateau;
         Difficulte difficulte;
         Taille taille;
@@ -53,6 +54,8 @@ namespace Demineur {
 
         /// <summary>Joue la partie.</summary>
         public void Jouer() {
+            Stopwatch chrono = new Stopwatch();
+            chrono.Start(); //
             while (!plateau.Gagne()) {
                 MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
                 MenuPartie.DemandeJoueur();
@@ -76,7 +79,7 @@ namespace Demineur {
                         ligne = byte.Parse(entree[1]);
                         if (ligne < 1 || ligne > plateau.Largeur) {
                             MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
-                        } else if (col <= plateau.Largeur && col > 0 && plateau[ligne - 1, col - 1].Ouverte) { // La case désirée ne peut pas être déjà occupée, cela est vérifié que si le numéro de colonne est valide
+                        } else if (col <= plateau.Largeur && col > 0 && plateau[ligne - 1, col - 1].Ouverte) { // La case désirée ne peut pas être déjà ouverte, cela est vérifié que si le numéro de colonne est valide
                             MenuPartie.CaseOuverte(ligne, col);
                             col = 0; // Le numéro de colonne ne remplit plus la condition de sortie
                         }
@@ -87,7 +90,7 @@ namespace Demineur {
                     } catch (IndexOutOfRangeException) {
                         MenuPartie.ErreurEspace();
                     }
-                } while (col < 1 || col > plateau.Largeur || ligne < 1 || ligne > plateau.Largeur); // La colonne et la ligne désirée doit être un nombre valide
+                } while (col < 1 || col > plateau.Largeur || ligne < 1 || ligne > plateau.Largeur); // La colonne et la ligne désirée doit être un nombre valide pour continuer
 
                 plateau.OuvrirCase(ligne - 1, col - 1);
                 if (plateau[ligne - 1, col - 1].Mine) {
@@ -97,6 +100,9 @@ namespace Demineur {
                     return;
                 }
             }
+            chrono.Stop();
+            if (chrono.ElapsedMilliseconds > joueur[difficulte, taille]) 
+                joueur[difficulte, taille] = chrono.ElapsedMilliseconds;
             MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
             MenuPartie.PartieGagne();
         }
