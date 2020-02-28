@@ -1,9 +1,9 @@
 ﻿using System;
-
 using System.Collections.Generic;
 
 namespace Demineur {
     /// <summary>Classe d'un joueur.</summary>
+    [Serializable]
     public class Joueur {
         string nom;
         readonly Dictionary<(Partie.Difficulte, Partie.Taille), long> temps;
