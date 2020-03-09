@@ -72,19 +72,17 @@ namespace Demineur {
         /// <summary>Évalue si le joueur a gagné.</summary>
         /// <returns>Retourne si le joueur a gagné</returns>
         public bool Gagne() {
-            for (byte ligne = 0; ligne < Largeur; ligne++)
-                for (byte col = 0; col < Largeur; col++)
-                    if (!plateau[ligne, col].Ouverte && !plateau[ligne, col].Mine)
-                        return false;
+            foreach (Case cases in plateau)
+                if (!cases.Ouverte && !cases.Mine)
+                    return false;
             return true;
         }
 
         /// <summary>Ouvre les cases contenant une mine.</summary>
         public void RevelerMines() {
-            for (byte ligne = 0; ligne < Largeur; ligne++)
-                for (byte col = 0; col < Largeur; col++)
-                    if (plateau[ligne, col].Mine)
-                        plateau[ligne, col].Ouverte = true;
+            foreach (Case cases in plateau)
+                if (cases.Mine)
+                    cases.Ouverte = true;
         }
     }
 }

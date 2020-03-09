@@ -44,67 +44,80 @@ namespace Demineur {
             this.difficulte = difficulte;
             this.taille = taille;
 
-            double nbMines = (double) difficulte / 100 * (byte) taille * (byte) taille;
-            Random alea = new Random();
-
-            for (byte i = 0; i < nbMines;)
-                if (plateau.PlacerMine(alea.Next((byte) taille), alea.Next((byte) taille)))
-                    i++;
+            DisperserMines();
         }
 
         /// <summary>Joue la partie.</summary>
         public void Jouer() {
             Stopwatch chrono = new Stopwatch();
-            chrono.Start(); //
-            while (!plateau.Gagne()) {
-                MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
-                MenuPartie.DemandeJoueur();
-                byte ligne, col; // Entrées d'utilisateur pour la ligne et la colonne désirée
+            chrono.Start();
 
-                do {
-                    ligne = col = 0;
-                    string[] entree = MenuPartie.EntreeJoueur().Split(' ');
-
-                    try {
-                        col = byte.Parse(entree[0]);
-                        if (col < 1 || col > plateau.Largeur)
-                            MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
-                    } catch (FormatException) {
-                        MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
-                    } catch (OverflowException) {
-                        MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
-                    }
-
-                    try {
-                        ligne = byte.Parse(entree[1]);
-                        if (ligne < 1 || ligne > plateau.Largeur) {
-                            MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
-                        } else if (col <= plateau.Largeur && col > 0 && plateau[ligne - 1, col - 1].Ouverte) { // La case désirée ne peut pas être déjà ouverte, cela est vérifié que si le numéro de colonne est valide
-                            MenuPartie.CaseOuverte(ligne, col);
-                            col = 0; // Le numéro de colonne ne remplit plus la condition de sortie
-                        }
-                    } catch (FormatException) {
-                        MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
-                    } catch (OverflowException) {
-                        MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
-                    } catch (IndexOutOfRangeException) {
-                        MenuPartie.ErreurEspace();
-                    }
-                } while (col < 1 || col > plateau.Largeur || ligne < 1 || ligne > plateau.Largeur); // La colonne et la ligne désirée doit être un nombre valide pour continuer
-
-                plateau.OuvrirCase(ligne - 1, col - 1);
-                if (plateau[ligne - 1, col - 1].Mine) {
+            while (!plateau.Gagne())
+                if (JouerTour()) {
                     plateau.RevelerMines();
                     MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
                     MenuPartie.MineOuverte();
                     return;
                 }
-            }
+
             chrono.Stop();
             if (chrono.ElapsedMilliseconds > joueur[difficulte, taille]) 
                 joueur[difficulte, taille] = chrono.ElapsedMilliseconds;
             MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
             MenuPartie.PartieGagne();
+        }
+
+        /// <summary>Disperse les mines sur le plateau de jeu.</summary>
+        void DisperserMines() {
+            double nbMines = (double)difficulte / 100 * (byte)taille * (byte)taille;
+            Random alea = new Random();
+
+            for (byte i = 0; i < nbMines;)
+                if (plateau.PlacerMine(alea.Next((byte)taille), alea.Next((byte)taille)))
+                    i++;
+        }
+
+        /// <summary>Exécute un tour de l'utilisateur et retourne si la case ouverte est un mine.</summary>
+        /// <returns>Retourne si la case ouverte est une mine</returns>
+        bool JouerTour() {
+            MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
+            MenuPartie.DemandeJoueur();
+            byte ligne, col; // Entrées d'utilisateur pour la ligne et la colonne désirée
+
+            do {
+                ligne = col = 0;
+                string[] entree = MenuPartie.EntreeJoueur().Split(' ');
+
+                try {
+                    col = byte.Parse(entree[0]);
+                    if (col < 1 || col > plateau.Largeur)
+                        MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
+                } catch (FormatException) {
+                    MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
+                } catch (OverflowException) {
+                    MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
+                }
+
+                try {
+                    ligne = byte.Parse(entree[1]);
+                    if (ligne < 1 || ligne > plateau.Largeur) {
+                        MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
+                    } else if (col <= plateau.Largeur && col > 0 && plateau[ligne - 1, col - 1].Ouverte) { // La case désirée ne peut pas être déjà ouverte, cela est vérifié que si le numéro de colonne est valide
+                        MenuPartie.CaseOuverte(ligne, col);
+                        col = 0; // Le numéro de colonne ne remplit plus la condition de sortie
+                    }
+                } catch (FormatException) {
+                    MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
+                } catch (OverflowException) {
+                    MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
+                } catch (IndexOutOfRangeException) {
+                    MenuPartie.ErreurEspace();
+                }
+            } while (col < 1 || col > plateau.Largeur || ligne < 1 || ligne > plateau.Largeur); // La colonne et la ligne désirée doit être un nombre valide pour continuer
+
+            plateau.OuvrirCase(ligne - 1, col - 1);
+
+            return plateau[ligne - 1, col - 1].Mine;
         }
     }
 }
