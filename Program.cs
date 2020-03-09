@@ -6,7 +6,7 @@ namespace Demineur {
         /// <param name="args">Arguments d'exécution en ligne de commande</param>
         static void Main(string[] args) {
             Demineur demineur = new Demineur();
-            demineur.Demarrer();
+            demineur.Demarrer();   
         }
     }
 }
