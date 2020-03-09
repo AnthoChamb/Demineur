@@ -31,6 +31,13 @@ namespace Demineur {
         /// <summary>Demande à l'utilisateur d'entrer un nom pour un nouveau joueur.</summary>
         public static void NouveauJoueur() => Console.WriteLine("Entrez un nom pour un nouveau joueur :");
 
+        /// <summary>Affiche l'entête du classement.</summary>
+        /// <param name="difficulte">Niveau de difficulté de la partie</param>
+        /// <param name="taille">Taille du plateau de jeu de la partie</param>
+        public static void AfficherEnteteClassement(string difficulte, string taille) {
+
+        }
+
         /// <summary>Affiche le classement du joueur.</summary>
         /// <param name="position">Position du joueur dans le classement</param>
         /// <param name="joueur">Nom du joueur</param>
