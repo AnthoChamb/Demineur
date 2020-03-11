@@ -8,13 +8,14 @@ namespace Demineur {
         public static void Bienvenue() => Console.WriteLine("Bienvenue au jeu de démineur.");
 
         /// <summary>Affiche le menu principal.</summary>
+        /// <returns>Retourne l'entree de l'utilisateur</returns>
         public static string AfficherMenu() {
             // TODO : Ajouter les choix du menu
 
             Console.WriteLine("---------------------------------------------------");
             Console.WriteLine("----------Bienvenue dans le jeu Démineur-----------");
             Console.WriteLine("--                                               --");
-            Console.WriteLine("  Veuillez sélectioner une des options suivantes : ");
+            Console.WriteLine("  Veuillez sélectioner l'une des options suivantes : ");
             Console.WriteLine("--    1- Commencer une partie.                   --");
             Console.WriteLine("--    2- Créer un joueur.                        --");
             Console.WriteLine("--    3- Afficher le classement.                 --");
@@ -24,11 +25,57 @@ namespace Demineur {
             return EntreeUtilisateur();     
            
         }
+        /// <summary>Affiche les choix disponibles pour l'affichage des classements.</summary>
+        /// <returns>Retourne l'entree de l'utilisateur</returns>
+        public static string AfficherChoixClassement() {
+            Console.WriteLine("  Veuillez sélectioner l'une des options suivantes : ");
+            Console.WriteLine("--                                               --");
+            Console.WriteLine("--    1- Afficher les scores d'un joueur.        --");
+            Console.WriteLine("--    2- Afficher le classement global.          --");
+            Console.Write("--   Faites un choix parmis les options suivantes : ");
+
+            return EntreeUtilisateur();
+        }
+        /// <summary>Affiche les choix disponibles pour la difficulté de la partie.</summary>
+        /// <returns>Retourne l'entree de l'utilisateur</returns>
+        public static string AfficherChoixDifficulte() {
+            Console.WriteLine("  Veuillez sélectioner l'une des options suivantes : ");
+            Console.WriteLine("--                                               --");
+            Console.WriteLine("--           Niveau de difficulté :              --");
+            Console.WriteLine("--                                               --");
+            Console.WriteLine("--               1- Petit                        --");
+            Console.WriteLine("--               2- Moyen                        --");
+            Console.WriteLine("--               3- Grand                        --");
+            Console.Write("--   Faites un choix parmis les options suivantes : ");
+
+            return EntreeUtilisateur();
+        }
+        /// <summary>Affiche les choix disponibles pour la taille du plateau.</summary>
+        /// <returns>Retourne l'entree de l'utilisateur</returns>
+        public static string AfficherChoixTaille() {
+            Console.WriteLine("  Veuillez sélectioner l'une des options suivantes : ");
+            Console.WriteLine("--                                               --");
+            Console.WriteLine("--            Taille du plateau :                --");
+            Console.WriteLine("--                                               --");
+            Console.WriteLine("--               1- Facile                       --");
+            Console.WriteLine("--               2- Intermédiaire                --");
+            Console.WriteLine("--               3- Difficile                    --");
+            Console.WriteLine("--               4- Extrême                      --");
+            Console.Write("--   Faites un choix parmis les options suivantes : ");
+
+            return EntreeUtilisateur();
+        }
+
 
         /// <summary>Reçoit l'entree de l'utilisateur.</summary>
         /// <returns>Retourne l'entree de l'utilisateur</returns>
         public static string EntreeUtilisateur() => Console.ReadLine();
-     
+
+        /// <summary>Attend quelconque entree de l'utilisateur.</summary>
+        public static void AttenteUtilisateur() {
+            Console.WriteLine("Appuyez sur une touche pour continuer...");
+            Console.ReadKey();
+        } 
         /// <summary>Informe l'utilisateur d'une entrée incorrecte.</summary>
         public static void EntreeIncorrecte() => Console.WriteLine("Entrée incorrecte. Veuillez réessayer.");
 

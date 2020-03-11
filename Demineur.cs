@@ -23,14 +23,15 @@ namespace Demineur {
             while (sortie) {
                 switch (MenuPrincipal.AfficherMenu()) {
                     case "1":
-                        Partie partie = new Partie(new Joueur("Anthony"), Partie.Difficulte.FACILE, Partie.Taille.PETIT);
+
+                        Partie partie = new Partie(SelectionJoueur(), SelectionDifficulte(), SelectionTaille());
                         partie.Jouer();
                         break;
                     case "2":
                         NouveauJoueur();
                         break;
                     case "3":
-
+                        
                         break;
                 }
 
@@ -81,5 +82,84 @@ namespace Demineur {
             }
 
         }
+
+        Joueur SelectionJoueur() {
+            Joueur joueur = null;
+
+            while (joueur == null) {
+            MenuPrincipal.DemandeJoueur();
+
+                try {
+                    joueur = joueurs[int.Parse(MenuPrincipal.EntreeUtilisateur()) - 1]; 
+                } catch {
+                    MenuPrincipal.EntreeIncorrecte();
+                } 
+            }
+            return joueur;
+        }
+        Partie.Difficulte SelectionDifficulte() {
+
+            bool selection = true;
+            Partie.Difficulte difficulte = Partie.Difficulte.FACILE;
+            while (selection) {
+
+                switch (MenuPrincipal.AfficherChoixDifficulte()) {
+                    case "1":
+                        difficulte = Partie.Difficulte.FACILE;
+                        selection = false;
+                        break;
+                    case "2":
+                        difficulte = Partie.Difficulte.INTERMEDIAIRE;
+                        selection = false;
+                        break;
+                    case "3":
+                        difficulte = Partie.Difficulte.DIFFICILE;
+                        selection = false;
+                        break;
+                    case "4":
+                        difficulte = Partie.Difficulte.EXTREME;
+                        selection = false;
+                        break;
+                    default:
+                        MenuPrincipal.EntreeIncorrecte();
+                        MenuPrincipal.AttenteUtilisateur();
+                        break;
+                }
+                
+            }
+             return difficulte;
+            }
+            
+Partie.Taille SelectionTaille() {
+        bool selection = true;
+        Partie.Taille taille = Partie.Taille.PETIT;
+        while (selection) {
+
+            switch (MenuPrincipal.AfficherChoixTaille()) {
+                case "1":
+                    taille = Partie.Taille.PETIT;
+                    selection = false;
+                    break;
+                case "2":
+                    taille = Partie.Taille.MOYEN;
+                    selection = false;
+                    break;
+                case "3":
+                    taille = Partie.Taille.GRAND;
+                    selection = false;
+                    break;
+                default:
+                    MenuPrincipal.EntreeIncorrecte();
+                    MenuPrincipal.AttenteUtilisateur();
+                    break;
+            }
+
+        }
+        return taille;
     }
+        }
+        
+
+
+    
 }
