@@ -9,9 +9,9 @@ namespace Demineur {
 
         /// <summary>Crée un nouveau jeu de démineur.</summary>
         public Demineur() {
-            joueurs = new List<Joueur>();
             OuvrirJoueurs();
         }
+
         /// <summary>Sauvegarde lors de la fin du jeu de démineur.</summary>
         ~Demineur() {
             SauvegarderJoueurs();
@@ -40,10 +40,14 @@ namespace Demineur {
 
         /// <summary>Ouvre un fichier binaire et y récupère la liste de joueurs.</summary>
         void OuvrirJoueurs() {
-            Stream flux = File.Open("joueurs.bin", FileMode.Open);
-            BinaryFormatter formatteur = new BinaryFormatter();
-            joueurs = (List<Joueur>)formatteur.Deserialize(flux);
-            flux.Close();
+            try {
+                Stream flux = File.Open("joueurs.bin", FileMode.Open);
+                BinaryFormatter formatteur = new BinaryFormatter();
+                joueurs = (List<Joueur>)formatteur.Deserialize(flux);
+                flux.Close();
+            } catch (FileNotFoundException) {
+                joueurs = new List<Joueur>();
+            }
         }
 
         /// <summary>Ouvre un fichier binaire et y écrit la liste de joueurs.</summary>
