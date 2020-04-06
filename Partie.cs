@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 
 namespace Demineur {
     /// <summary>Classe d'une partie de démineur.</summary>
@@ -40,84 +38,127 @@ namespace Demineur {
         /// <exception cref="ArgumentNullException">Le joueur assigné à la partie ne peut pas être la valeur null</exception>
         public Partie(Joueur joueur, Difficulte difficulte, Taille taille) {
             this.joueur = joueur ?? throw new ArgumentNullException();
-            plateau = new Plateau((byte) taille);
             this.difficulte = difficulte;
             this.taille = taille;
+        }
 
-            DisperserMines();
+        /// <summary>Crée une partie pour l'intelligence artificielle.</summary>
+        /// <param name="difficulte">Niveau de difficulté de la partie</param>
+        /// <param name="taille">Taille du plateau de la partie</param>
+        public Partie(Difficulte difficulte, Taille taille) {
+            joueur = null;
+            this.difficulte = difficulte;
+            this.taille = taille;
         }
 
         /// <summary>Joue la partie.</summary>
         public void Jouer() {
+            plateau = new Plateau((byte)taille);
+            
             Stopwatch chrono = new Stopwatch();
-            chrono.Start();
 
-            while (!plateau.Gagne())
-                if (JouerTour()) {
-                    plateau.RevelerMines();
-                    MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
-                    MenuPartie.MineOuverte();
-                    return;
+            if (joueur != null)
+                chrono.Start();
+
+            while (!plateau.Terminer())
+                JouerTour();
+
+            if (plateau.Gagne()) {
+                if (joueur != null) {
+                    chrono.Stop();
+                    if (chrono.ElapsedMilliseconds > joueur[difficulte, taille])
+                        joueur[difficulte, taille] = chrono.ElapsedMilliseconds;
                 }
-
-            chrono.Stop();
-            if (chrono.ElapsedMilliseconds > joueur[difficulte, taille]) 
-                joueur[difficulte, taille] = chrono.ElapsedMilliseconds;
-            MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
-            MenuPartie.PartieGagne();
+                MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
+                MenuPartie.PartieGagne();
+            } else {
+                plateau.RevelerMines();
+                MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
+                MenuPartie.MineOuverte();
+            }
         }
 
-        /// <summary>Disperse les mines sur le plateau de jeu.</summary>
-        void DisperserMines() {
+        /// <summary>Disperse les mines sur le plateau de jeu en excluant les indices à jouer.</summary>
+        /// <param name="ligne">Indice de la ligne à jouer</param>
+        /// <param name="col">Indice de la colonne à jouer</param>
+        void DisperserMines(int ligne, int col) {
             double nbMines = (double)difficulte / 100 * (byte)taille * (byte)taille;
             Random alea = new Random();
 
-            for (byte i = 0; i < nbMines;)
-                if (plateau.PlacerMine(alea.Next((byte)taille), alea.Next((byte)taille)))
-                    i++;
+            int aleaLigne, aleaCol; // Indices générés aléatoirement
+
+            for (int i = 0; i < nbMines;) {
+                aleaLigne = alea.Next((byte)taille);
+                aleaCol = alea.Next((byte)taille);
+                // Évalue si les indices aléatoires sont les mêmes que les indices à jouer puis si ceux-ci ont déjà une mine
+                if ((aleaLigne != ligne || aleaCol != col) && plateau.PlacerMine(aleaLigne, aleaCol))
+                    i++;                    
+            }
+                
         }
 
-        /// <summary>Exécute un tour de l'utilisateur et retourne si la case ouverte est un mine.</summary>
-        /// <returns>Retourne si la case ouverte est une mine</returns>
-        bool JouerTour() {
+        /// <summary>Évalue si il faut jouer le premier coup de la partie.</summary>
+        /// <param name="plateau">Représentation en chaine du plateau de jeu</param>
+        /// <returns>Retourne si il faut jouer le premier coup de la partie</returns>
+        static bool PremierCoup(string plateau) {
+            foreach (char element in plateau)
+                if (element != '.')
+                    return false;
+            return true;
+        }
+
+        /// <summary>Exécute un tour de la partie.</summary>
+        void JouerTour() {
             MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
             MenuPartie.DemandeJoueur();
-            byte ligne, col; // Entrées d'utilisateur pour la ligne et la colonne désirée
 
-            do {
-                ligne = col = 0;
-                string[] entree = MenuPartie.EntreeJoueur().Split(' ');
+            int ligne, col; // Ligne et la colonne à jouer
 
-                try {
-                    col = byte.Parse(entree[0]);
-                    if (col < 1 || col > plateau.Largeur)
+            if (joueur == null) {
+                int coups = IA.JouerCoups(plateau.ToString(), plateau.Largeur);
+                ligne = coups / plateau.Largeur;
+                col = coups % plateau.Largeur;
+                Console.WriteLine((col + 1) + " " + (ligne + 1));
+            } else {
+                do {
+                    ligne = col = 0;
+                    string[] entree = MenuPartie.EntreeJoueur().Split(' ');
+
+                    try {
+                        col = int.Parse(entree[0]);
+                        if (col < 1 || col > plateau.Largeur)
+                            MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
+                    } catch (FormatException) {
                         MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
-                } catch (FormatException) {
-                    MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
-                } catch (OverflowException) {
-                    MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
-                }
-
-                try {
-                    ligne = byte.Parse(entree[1]);
-                    if (ligne < 1 || ligne > plateau.Largeur) {
-                        MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
-                    } else if (col <= plateau.Largeur && col > 0 && plateau[ligne - 1, col - 1].Ouverte) { // La case désirée ne peut pas être déjà ouverte, cela est vérifié que si le numéro de colonne est valide
-                        MenuPartie.CaseOuverte(ligne, col);
-                        col = 0; // Le numéro de colonne ne remplit plus la condition de sortie
+                    } catch (OverflowException) {
+                        MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
                     }
-                } catch (FormatException) {
-                    MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
-                } catch (OverflowException) {
-                    MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
-                } catch (IndexOutOfRangeException) {
-                    MenuPartie.ErreurEspace();
-                }
-            } while (col < 1 || col > plateau.Largeur || ligne < 1 || ligne > plateau.Largeur); // La colonne et la ligne désirée doit être un nombre valide pour continuer
 
-            plateau.OuvrirCase(ligne - 1, col - 1);
+                    try {
+                        ligne = int.Parse(entree[1]);
+                        if (ligne < 1 || ligne > plateau.Largeur) {
+                            MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
+                        } else if (col <= plateau.Largeur && col > 0 && plateau[ligne - 1, col - 1].Ouverte) { // La case désirée ne peut pas être déjà ouverte, cela est vérifié que si le numéro de colonne est valide
+                            MenuPartie.CaseOuverte(ligne, col);
+                            col = 0; // Le numéro de colonne ne remplit plus la condition de sortie
+                        }
+                    } catch (FormatException) {
+                        MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
+                    } catch (OverflowException) {
+                        MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
+                    } catch (IndexOutOfRangeException) {
+                        MenuPartie.ErreurEspace();
+                    }
+                } while (col < 1 || col > plateau.Largeur || ligne < 1 || ligne > plateau.Largeur); // La colonne et la ligne désirée doit être un nombre valide pour continuer
+                // Décrémente les entrées de l'utilisateur
+                ligne--; 
+                col--;
+            }
 
-            return plateau[ligne - 1, col - 1].Mine;
+            if (PremierCoup(plateau.ToString()))
+                DisperserMines(ligne, col);
+
+            plateau.OuvrirCase(ligne, col);
         }
     }
 }

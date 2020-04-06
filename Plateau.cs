@@ -36,7 +36,7 @@ namespace Demineur {
             return chaine;
         }
 
-        /// <summary>Place une mine aux indices précisés et ajuste le compte de mines autours.</summary>
+        /// <summary>Place une mine aux indices précisés et ajuste le compte de mines autours. Évalue si cette case contient déjà une mine.</summary>
         /// <param name="ligne">Indice de la ligne de la mine à placer</param>
         /// <param name="col">Indice de la colonne de la mine à placer</param>
         /// <returns>Retourne si cette case contient déjà une mine</returns>
@@ -76,6 +76,15 @@ namespace Demineur {
                 if (!cases.Ouverte && !cases.Mine)
                     return false;
             return true;
+        }
+
+        /// <summary>Évalue si le plateau est terminé.</summary>
+        /// <returns>Retourne si le plateau est terminé</returns>
+        public bool Terminer() {
+            foreach (Case cases in plateau)
+                if (cases.Ouverte && cases.Mine)
+                    return true;
+            return Gagne();
         }
 
         /// <summary>Ouvre les cases contenant une mine.</summary>
