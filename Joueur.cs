@@ -24,7 +24,8 @@ namespace Demineur {
         /// <param name="difficulte">Niveau de difficulté de la partie</param>
         /// <param name="taille">Taille du plateau de jeu de la partie</param>
         /// <returns>Retourne le meilleur temps en millisecondes du joueur pour la difficulté et la taille d'une partie</returns>
-        public long this[Partie.Difficulte difficulte, Partie.Taille taille] { get => temps[(difficulte, taille)]; set => temps[(difficulte, taille)] = value;  }
+        /// <remarks>Si le joueur ne possède pas de temps pour une certaine difficulte et taille, l'indexeur retourne la valeur maximale du type de données long</remarks>
+        public long this[Partie.Difficulte difficulte, Partie.Taille taille] { get => temps.ContainsKey((difficulte, taille)) ? temps[(difficulte, taille)] : long.MaxValue; set => temps[(difficulte, taille)] = value; }
 
         /// <summary>Nom du joueur.</summary>
         /// <returns>Retourne le nom du joueur</returns>
