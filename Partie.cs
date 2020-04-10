@@ -66,7 +66,7 @@ namespace Demineur {
             if (plateau.Gagne()) {
                 if (joueur != null) {
                     chrono.Stop();
-                    if (chrono.ElapsedMilliseconds > joueur[difficulte, taille])
+                    if (chrono.ElapsedMilliseconds < joueur[difficulte, taille])
                         joueur[difficulte, taille] = chrono.ElapsedMilliseconds;
                 }
                 MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
@@ -98,10 +98,9 @@ namespace Demineur {
         }
 
         /// <summary>Évalue si il faut jouer le premier coup de la partie.</summary>
-        /// <param name="plateau">Représentation en chaine du plateau de jeu</param>
         /// <returns>Retourne si il faut jouer le premier coup de la partie</returns>
-        static bool PremierCoup(string plateau) {
-            foreach (char element in plateau)
+        bool PremierCoup() {
+            foreach (char element in plateau.ToString())
                 if (element != '.')
                     return false;
             return true;
@@ -155,7 +154,7 @@ namespace Demineur {
                 col--;
             }
 
-            if (PremierCoup(plateau.ToString()))
+            if (PremierCoup())
                 DisperserMines(ligne, col);
 
             plateau.OuvrirCase(ligne, col);
