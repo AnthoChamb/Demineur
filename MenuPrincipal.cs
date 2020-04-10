@@ -21,6 +21,7 @@ namespace Demineur {
             Console.WriteLine("--         1- Commencer une partie.              --");
             Console.WriteLine("--         2- Créer un joueur.                   --");
             Console.WriteLine("--         3- Afficher le classement.            --");
+            Console.WriteLine("--         4- Quitter.                           --");
             Console.WriteLine("--                                               --");
             Console.Write("--   Faites un choix parmis les options  : ");
 
@@ -35,10 +36,10 @@ namespace Demineur {
             Console.WriteLine("--                                               --");
             Console.WriteLine("--           Commencer une partie :              --");
             Console.WriteLine("--                                               --");
-            Console.WriteLine("--     1- Débuter une partie avec l'I.A          --");
-            Console.WriteLine("--     2- Débuter une partie multijoueur.        --");
+            Console.WriteLine("--     1-  Débuter une partie.                   --");
+            Console.WriteLine("--     2-  Débuter une partie avec l'I.A         --");
             Console.WriteLine("--                                               --");
-            Console.WriteLine("--     3- Retour                       --");
+            Console.WriteLine("--     3- Retour                                 --");
             Console.Write("--   Faites un choix parmis les options  : ");
 
             return EntreeUtilisateur();
@@ -103,7 +104,9 @@ namespace Demineur {
 
         /// <summary>Demande à l'utilisateur d'entrer un nom pour un nouveau joueur.</summary>
         public static void NouveauJoueur() => Console.WriteLine("Entrez un nom pour un nouveau joueur :");
-        /// <summary>Informe l'utilisateur que le nom choisi est invalide vu qu'il est déjà affcté à un autre joueur.</summary>
+        /// <summary>Informe le joueur que le nouveau joueur a été ajouté.</summary>
+        public static void ValidationAjout(string nom) => Console.WriteLine("Le joueur " + nom + "a été ajouté avec succès !");
+        /// <summary>Informe l'utilisateur que le nom choisi est invalide vu qu'il est déjà affecté à un autre joueur.</summary>
         public static void DoublonJoueur() => Console.WriteLine("Le nom que vous avez tenté d'entrer est déjà utilisé, veuillez en utiliser un autre.");
         /// <summary>Affiche l'entête du classement.</summary>
         /// <param name="difficulte">Niveau de difficulté de la partie</param>
@@ -115,5 +118,19 @@ namespace Demineur {
         /// <param name="joueur">Nom du joueur</param>
         /// <param name="temps">Le temps du joueur en milliseconde</param>
         public static void AfficherClassement(int position, string joueur, long temps) => Console.WriteLine("#" + position + "- " + joueur + "\t" + TimeSpan.FromMilliseconds(temps).TotalSeconds + " secondes");
+        /// <summary>Valide avec l'utilisateur s'il désire vraiment quitter l'application en cours.</summary>
+        public static string ValidationQuitter() {
+            Console.WriteLine("Souhaitez-vous vraiment quitter le jeu de Démineur ?" + "\n");
+            Console.Write("(oui / non) :");
+            return EntreeUtilisateur();
+        }
+        /// <summary>Confirme la fermeture de l application</summary>
+        public static Boolean ConfirmerQuitter(string validation) {
+            string valid = validation.ToLower();
+            if (valid == "o" || valid == "oui")
+                return true;
+            return false;
+        }
     }
+    
 }

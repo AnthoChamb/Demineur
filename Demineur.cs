@@ -2,46 +2,38 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Demineur
-{
+namespace Demineur {
     /// <summary>Classe d'un jeu de démineur.</summary>
-    public class Demineur
-    {
+    public class Demineur {
         List<Joueur> joueurs;
 
         /// <summary>Crée un nouveau jeu de démineur.</summary>
-        public Demineur()
-        {
+        public Demineur() {
             OuvrirJoueurs();
         }
 
         /// <summary>Sauvegarde lors de la fin du jeu de démineur.</summary>
-        ~Demineur()
-        {
+        ~Demineur() {
             SauvegarderJoueurs();
         }
 
         /// <summary>Démarre l'exécution du jeu de démineur.</summary>
-        public void Demarrer()
-        {
+        public void Demarrer() {
             bool sortie = true;
-            while (sortie)
-            {
-                switch (MenuPrincipal.AfficherMenu())
-                {
+            while (sortie) {
+                switch (MenuPrincipal.AfficherMenu()) {
                     case "1":
                         Partie partie = null;
                         bool continuer = true;
 
-                        while (continuer)
-                        {
+                        while (continuer) {
                             switch (MenuPrincipal.AfficherCommencerPartie()) {
                                 case "1":
-                                    partie = new Partie(SelectionDifficulte(), SelectionTaille());
+                                    partie = new Partie(SelectionJoueur(), SelectionDifficulte(), SelectionTaille());
                                     continuer = false;
                                     break;
                                 case "2":
-                                    partie = new Partie(SelectionJoueur(), SelectionDifficulte(), SelectionTaille());
+                                    partie = new Partie(SelectionDifficulte(), SelectionTaille());
                                     continuer = false;
                                     break;
                                 case "3":
@@ -61,7 +53,13 @@ namespace Demineur
                         NouveauJoueur();
                         break;
                     case "3":
-                       
+                        AfficherTopClassement();
+                        MenuPrincipal.AttenteUtilisateur();
+                        break;
+
+                    case "4":
+                        if(MenuPrincipal.ConfirmerQuitter(MenuPrincipal.ValidationQuitter()))
+                        sortie = false;
                         break;
                 }
 
@@ -70,24 +68,19 @@ namespace Demineur
         }
 
         /// <summary>Ouvre un fichier binaire et y récupère la liste de joueurs.</summary>
-        void OuvrirJoueurs()
-        {
-            try
-            {
+        void OuvrirJoueurs() {
+            try {
                 Stream flux = File.Open("joueurs.bin", FileMode.Open);
                 BinaryFormatter formatteur = new BinaryFormatter();
                 joueurs = (List<Joueur>)formatteur.Deserialize(flux);
                 flux.Close();
-            }
-            catch (FileNotFoundException)
-            {
+            } catch (FileNotFoundException) {
                 joueurs = new List<Joueur>();
             }
         }
 
         /// <summary>Ouvre un fichier binaire et y écrit la liste de joueurs.</summary>
-        void SauvegarderJoueurs()
-        {
+        void SauvegarderJoueurs() {
             Stream flux = File.Open("joueurs.bin", FileMode.Create);
             BinaryFormatter formatteur = new BinaryFormatter();
             formatteur.Serialize(flux, joueurs);
@@ -95,69 +88,58 @@ namespace Demineur
         }
 
         /// <summary>Vérification et ajout d'un nouveau joueur.</summary>
-        void NouveauJoueur()
-        {
+        void NouveauJoueur() {
 
             bool doublon = true;
             bool ajout = true;
             string nom;
 
-            while (ajout)
-            {
+            while (ajout) {
                 MenuPrincipal.NouveauJoueur();
                 nom = MenuPrincipal.EntreeUtilisateur();
 
-                foreach (Joueur element in joueurs)
-                {
-                    if (nom == element.Nom)
-                    {
+                foreach (Joueur element in joueurs) {
+                    if (nom == element.Nom) {
                         MenuPrincipal.DoublonJoueur();
                         doublon = false;
                         MenuPrincipal.AttenteUtilisateur();
                     }
                 }
-                if (doublon)
-                {
+                if (doublon) {
                     joueurs.Add(new Joueur(nom));
+                    MenuPrincipal.ValidationAjout(nom);
+                    MenuPrincipal.AttenteUtilisateur();
                     ajout = false;
                 }
             }
 
         }
-
-        Joueur SelectionJoueur()
-        {
+        /// <summary>Sélection d'un joueur dans la liste de joueurs existants.</summary>
+        Joueur SelectionJoueur() {
             Joueur joueur = null;
-            for (int i = 0; i < joueurs.Count; i++)
-            {
+            for (int i = 0; i < joueurs.Count; i++) {
                 MenuPrincipal.AfficherJoueur(i + 1, joueurs[i].Nom);
             }
-            while (joueur == null)
-            {
+            while (joueur == null) {
                 MenuPrincipal.DemandeJoueur();
 
-                try
-                {
+                try {
                     joueur = joueurs[int.Parse(MenuPrincipal.EntreeUtilisateur()) - 1];
-                }
-                catch
-                {
+                } catch {
                     MenuPrincipal.EntreeIncorrecte();
                     MenuPrincipal.AttenteUtilisateur();
                 }
             }
             return joueur;
         }
-        Partie.Difficulte SelectionDifficulte()
-        {
+        /// <summary>Sélection d'une difficulté dans ceux existantes.</summary>
+        Partie.Difficulte SelectionDifficulte() {
 
             bool selection = true;
             Partie.Difficulte difficulte = Partie.Difficulte.FACILE;
-            while (selection)
-            {
+            while (selection) {
 
-                switch (MenuPrincipal.AfficherChoixDifficulte())
-                {
+                switch (MenuPrincipal.AfficherChoixDifficulte()) {
                     case "1":
                         difficulte = Partie.Difficulte.FACILE;
                         selection = false;
@@ -186,16 +168,13 @@ namespace Demineur
             }
             return difficulte;
         }
-
-        Partie.Taille SelectionTaille()
-        {
+        /// <summary>Sélection d'une taille dans ceux existantes.</summary>
+        Partie.Taille SelectionTaille() {
             bool selection = true;
             Partie.Taille taille = Partie.Taille.PETIT;
-            while (selection)
-            {
+            while (selection) {
 
-                switch (MenuPrincipal.AfficherChoixTaille())
-                {
+                switch (MenuPrincipal.AfficherChoixTaille()) {
                     case "1":
                         taille = Partie.Taille.PETIT;
                         selection = false;
@@ -220,17 +199,16 @@ namespace Demineur
             }
             return taille;
         }
-        void AfficherTopClassement()
-        {
+        /// <summary>Afficher le classement des meilleurs temps selon la difficluté et la taille désirées.</summary>
+        void AfficherTopClassement() {
             Partie.Difficulte difficulte = SelectionDifficulte();
             Partie.Taille taille = SelectionTaille();
 
             joueurs.Sort((a, b) => a[difficulte, taille].CompareTo(b[difficulte, taille]));
 
             MenuPrincipal.AfficherEnteteClassement(difficulte.ToString(), taille.ToString());
-           
-            for(int i = 0; i < joueurs.Count; i++)
-            {
+
+            for (int i = 0; i < joueurs.Count; i++) {
                 if (joueurs[i][difficulte, taille] != long.MaxValue)
                     MenuPrincipal.AfficherClassement(i + 1, joueurs[i].Nom, joueurs[i][difficulte, taille]);
             }
