@@ -19,7 +19,7 @@ namespace Demineur {
             Console.WriteLine("--                                               --");
             Console.WriteLine("  Veuillez sélectioner l'une des options suivantes : ");
             Console.WriteLine("--         1- Commencer une partie.              --");
-            Console.WriteLine("--         2- Créer un joueur.                   --");
+            Console.WriteLine("--         2- Gestion des joueurs.               --");
             Console.WriteLine("--         3- Afficher le classement.            --");
             Console.WriteLine("--         4- Quitter.                           --");
             Console.WriteLine("--                                               --");
@@ -27,6 +27,21 @@ namespace Demineur {
 
             return EntreeUtilisateur();     
            
+        }
+        /// <summary>Affiche le menu pour la gestion des joueurs.</summary>
+        /// <returns>Retourne l'entree de l'utilisateur</returns>
+        public static string AfficherGestionJoueurs() {
+            Console.WriteLine("  Veuillez sélectioner l'une des options suivantes : ");
+            Console.WriteLine("--                                               --");
+            Console.WriteLine("--           Gestion des joueurs :              --");
+            Console.WriteLine("--                                               --");
+            Console.WriteLine("--     1-  Créer un joueur.                      --");
+            Console.WriteLine("--     2-  Supprimer un joueur.                  --");
+            Console.WriteLine("--                                               --");
+            Console.WriteLine("--     3- Retour                                 --");
+            Console.Write("--   Faites un choix parmis les options  : ");
+
+            return EntreeUtilisateur();
         }
         /// <summary>Affiche le menu pour commencer une partie.</summary>
         /// <returns>Retourne l'entree de l'utilisateur</returns>
@@ -103,9 +118,17 @@ namespace Demineur {
         public static void PartieImpossible() => Console.WriteLine("Il n'y a pas assez de joueurs disponibles pour commencer une partie.");
 
         /// <summary>Demande à l'utilisateur d'entrer un nom pour un nouveau joueur.</summary>
-        public static void NouveauJoueur() => Console.WriteLine("Entrez un nom pour un nouveau joueur :");
+        public static void NouveauJoueur() => Console.Write("Entrez un nom pour un nouveau joueur :");
+        /// <summary>Demande à l'utilisateur d'entrer un numéro de joueur pour le supprimer de la liste de joueurs.</summary>
+        public static string SupprimerJoueur() {
+            Console.Write("Veuillez entrer le numéro du joueur que vous désirez supprimer : ");
+            return EntreeUtilisateur();
+        }
+
         /// <summary>Informe le joueur que le nouveau joueur a été ajouté.</summary>
-        public static void ValidationAjout(string nom) => Console.WriteLine("Le joueur " + nom + "a été ajouté avec succès !");
+        public static void ConfirmationAjout(string nom) => Console.WriteLine("Le joueur " + nom + "a été ajouté avec succès !");
+        /// <summary>Informe le joueur que le nouveau joueur a été supprimé.</summary>
+        public static void ConfirmationSupprimer(string nom) => Console.WriteLine("Le joueur " + nom + "a été supprimé avec succès !");
         /// <summary>Informe l'utilisateur que le nom choisi est invalide vu qu'il est déjà affecté à un autre joueur.</summary>
         public static void DoublonJoueur() => Console.WriteLine("Le nom que vous avez tenté d'entrer est déjà utilisé, veuillez en utiliser un autre.");
         /// <summary>Affiche l'entête du classement.</summary>
@@ -122,12 +145,17 @@ namespace Demineur {
         public static string ValidationQuitter() {
             Console.WriteLine("Souhaitez-vous vraiment quitter le jeu de Démineur ?" + "\n");
             Console.Write("(oui / non) :");
-            return EntreeUtilisateur();
+            return EntreeUtilisateur().ToLower();
+        }
+        /// <summary>Valide avec l'utilisateur s'il désire vraiment supprimer un joueur.</summary>
+        public static string ValidationSupprimer(string nom) {
+            Console.WriteLine("Souhaitez-vous vraiment supprimer ?" + nom + "\n");
+            Console.Write("(oui / non) :");
+            return EntreeUtilisateur().ToLower();
         }
         /// <summary>Confirme la fermeture de l application</summary>
-        public static Boolean ConfirmerQuitter(string validation) {
-            string valid = validation.ToLower();
-            if (valid == "o" || valid == "oui")
+        public static Boolean Confirmer(string validation) {
+            if (validation == "o" || validation == "oui")
                 return true;
             return false;
         }

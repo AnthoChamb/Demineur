@@ -50,7 +50,17 @@ namespace Demineur {
 
                         break;
                     case "2":
-                        NouveauJoueur();
+                        switch (MenuPrincipal.AfficherGestionJoueurs()) {
+                            case "1":
+                                NouveauJoueur();
+                                break;
+                            case "2":
+                                SupprimerJoueur();
+                                break;
+                            case "3":
+                                break;
+                        }
+
                         break;
                     case "3":
                         AfficherTopClassement();
@@ -58,8 +68,8 @@ namespace Demineur {
                         break;
 
                     case "4":
-                        if(MenuPrincipal.ConfirmerQuitter(MenuPrincipal.ValidationQuitter()))
-                        sortie = false;
+                        if (MenuPrincipal.Confirmer(MenuPrincipal.ValidationQuitter()))
+                            sortie = false;
                         break;
                 }
 
@@ -107,19 +117,39 @@ namespace Demineur {
                 }
                 if (doublon) {
                     joueurs.Add(new Joueur(nom));
-                    MenuPrincipal.ValidationAjout(nom);
+                    MenuPrincipal.ConfirmationAjout(nom);
                     MenuPrincipal.AttenteUtilisateur();
                     ajout = false;
                 }
             }
 
         }
+        /// <summary>Validation et confirmation de la supression d'un joueur.</summary>
+        void SupprimerJoueur() {
+            bool supress = true;
+            int rep;
+            AfficherJoueurs();
+
+            while (supress) {
+
+                try {
+                    if (MenuPrincipal.Confirmer(MenuPrincipal.ValidationSupprimer(joueurs[rep = int.Parse(MenuPrincipal.SupprimerJoueur())].Nom))) {
+                        joueurs.RemoveAt(rep);
+                        supress = true;
+                    }
+                } catch {
+                    MenuPrincipal.EntreeIncorrecte();
+                    MenuPrincipal.AttenteUtilisateur();
+                }
+            }
+
+        }
+
+
         /// <summary>Sélection d'un joueur dans la liste de joueurs existants.</summary>
         Joueur SelectionJoueur() {
             Joueur joueur = null;
-            for (int i = 0; i < joueurs.Count; i++) {
-                MenuPrincipal.AfficherJoueur(i + 1, joueurs[i].Nom);
-            }
+            AfficherJoueurs();
             while (joueur == null) {
                 MenuPrincipal.DemandeJoueur();
 
@@ -214,6 +244,12 @@ namespace Demineur {
             }
 
 
+        }
+        /// <summary>Afficher la liste complète de joueurs existants.</summary>
+        void AfficherJoueurs() {
+            for (int i = 0; i < joueurs.Count; i++) {
+                MenuPrincipal.AfficherJoueur(i + 1, joueurs[i].Nom);
+            }
         }
 
 
