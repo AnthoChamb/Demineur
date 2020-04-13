@@ -21,16 +21,23 @@ namespace Demineur {
         public void Demarrer() {
             bool sortie = true;
             while (sortie) {
+                MenuPrincipal.EffaceEcran();
                 switch (MenuPrincipal.AfficherMenu()) {
                     case "1":
                         Partie partie = null;
                         bool continuer = true;
 
                         while (continuer) {
+                            MenuPrincipal.EffaceEcran();
                             switch (MenuPrincipal.AfficherCommencerPartie()) {
                                 case "1":
-                                    partie = new Partie(SelectionJoueur(), SelectionDifficulte(), SelectionTaille());
-                                    continuer = false;
+                                    if (joueurs.Count > 0) {
+                                        partie = new Partie(SelectionJoueur(), SelectionDifficulte(), SelectionTaille());
+                                        continuer = false;
+                                    } else {
+                                        MenuPrincipal.PartieImpossible();
+                                        MenuPrincipal.AttenteUtilisateur();
+                                    }
                                     break;
                                 case "2":
                                     partie = new Partie(SelectionDifficulte(), SelectionTaille());
@@ -46,10 +53,12 @@ namespace Demineur {
                                     break;
                             }
                         }
-                        partie.Jouer();
+                        if (partie != null)
+                            partie.Jouer();
 
                         break;
                     case "2":
+                        MenuPrincipal.EffaceEcran();
                         switch (MenuPrincipal.AfficherGestionJoueurs()) {
                             case "1":
                                 NouveauJoueur();
@@ -63,11 +72,13 @@ namespace Demineur {
 
                         break;
                     case "3":
+                        MenuPrincipal.EffaceEcran();
                         AfficherTopClassement();
                         MenuPrincipal.AttenteUtilisateur();
                         break;
 
                     case "4":
+                        MenuPrincipal.EffaceEcran();
                         if (MenuPrincipal.Confirmer(MenuPrincipal.ValidationQuitter()))
                             sortie = false;
                         break;
@@ -113,7 +124,7 @@ namespace Demineur {
                         MenuPrincipal.DoublonJoueur();
                         doublon = false;
                         MenuPrincipal.AttenteUtilisateur();
-                    }
+                    } else doublon = true;
                 }
                 if (doublon) {
                     joueurs.Add(new Joueur(nom));
@@ -133,9 +144,11 @@ namespace Demineur {
             while (supress) {
 
                 try {
-                    if (MenuPrincipal.Confirmer(MenuPrincipal.ValidationSupprimer(joueurs[rep = int.Parse(MenuPrincipal.SupprimerJoueur())].Nom))) {
+                    if (MenuPrincipal.Confirmer(MenuPrincipal.ValidationSupprimer(joueurs[rep = int.Parse(MenuPrincipal.SupprimerJoueur()) - 1].Nom))) {
+                        MenuPrincipal.ConfirmationSupprimer(joueurs[rep].Nom);
                         joueurs.RemoveAt(rep);
-                        supress = true;
+                        MenuPrincipal.AttenteUtilisateur();
+                        supress = false;
                     }
                 } catch {
                     MenuPrincipal.EntreeIncorrecte();
@@ -187,8 +200,6 @@ namespace Demineur {
                         selection = false;
                         break;
 
-                    case "5":
-                        break;
                     default:
                         MenuPrincipal.EntreeIncorrecte();
                         MenuPrincipal.AttenteUtilisateur();
@@ -217,8 +228,6 @@ namespace Demineur {
                         taille = Partie.Taille.GRAND;
                         selection = false;
                         break;
-                    case "4":
-                        break;
 
                     default:
                         MenuPrincipal.EntreeIncorrecte();
@@ -233,7 +242,7 @@ namespace Demineur {
         void AfficherTopClassement() {
             Partie.Difficulte difficulte = SelectionDifficulte();
             Partie.Taille taille = SelectionTaille();
-
+            MenuPrincipal.EffaceEcran();
             joueurs.Sort((a, b) => a[difficulte, taille].CompareTo(b[difficulte, taille]));
 
             MenuPrincipal.AfficherEnteteClassement(difficulte.ToString(), taille.ToString());

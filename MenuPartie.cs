@@ -3,11 +3,12 @@
 namespace Demineur {
     /// <summary>Classe du menu des parties.</summary>
     public static class MenuPartie {
-        /// <summary>Formatte le plateau de jeu et l'affiche à l'écran</summary>
+        /// <summary>Efface le contenu à l'écran et affiche le plateau de jeu formatté.</summary>
         /// <param name="plateau">Représentation en chaine du plateau de jeu</param>
         /// <param name="largeur">Largeur du plateau de jeu</param>
         /// <returns>Une chaine formattée du plateau de jeu</returns>
         public static void AfficherPlateau(string plateau, int largeur) {
+            Console.Clear();
             string format = plateau[0].ToString();
 
             for (int i = 1; i < plateau.Length; i++)
