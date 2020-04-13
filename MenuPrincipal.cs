@@ -20,11 +20,11 @@ namespace Demineur {
             Console.WriteLine("--         1- Commencer une partie.              --");
             Console.WriteLine("--         2- Gestion des joueurs.               --");
             Console.WriteLine("--         3- Afficher le classement.            --");
-            Console.WriteLine("--         4- Quitter.                           --");
+            Console.WriteLine("--         4- Sauvegarder et quitter.            --");
             Console.WriteLine("--                                               --");
             Console.Write("--   Faites un choix parmis les options  : ");
 
-            return EntreeUtilisateur();     
+            return Console.ReadLine();     
            
         }
         /// <summary>Affiche le menu pour la gestion des joueurs.</summary>
@@ -40,7 +40,7 @@ namespace Demineur {
             Console.WriteLine("--     3- Retour                                 --");
             Console.Write("--   Faites un choix parmis les options  : ");
 
-            return EntreeUtilisateur();
+            return Console.ReadLine();
         }
         /// <summary>Affiche le menu pour commencer une partie.</summary>
         /// <returns>Retourne l'entree de l'utilisateur</returns>
@@ -56,7 +56,7 @@ namespace Demineur {
             Console.WriteLine("--     3- Retour                                 --");
             Console.Write("--   Faites un choix parmis les options  : ");
 
-            return EntreeUtilisateur();
+            return Console.ReadLine();
         }
         /// <summary>Affiche les choix disponibles pour la difficulté de la partie.</summary>
         /// <returns>Retourne l'entree de l'utilisateur</returns>
@@ -73,7 +73,7 @@ namespace Demineur {
             Console.WriteLine("--                                               --");
             Console.Write("--   Faites un choix parmis les options : ");
 
-            return EntreeUtilisateur();
+            return Console.ReadLine();
         }
         /// <summary>Affiche les choix disponibles pour la taille du plateau.</summary>
         /// <returns>Retourne l'entree de l'utilisateur</returns>
@@ -89,13 +89,8 @@ namespace Demineur {
             Console.WriteLine("--                                               --");
             Console.Write("--   Faites un choix parmis les options  : ");
 
-            return EntreeUtilisateur();
+            return Console.ReadLine();
         }
-
-
-        /// <summary>Reçoit l'entree de l'utilisateur.</summary>
-        /// <returns>Retourne l'entree de l'utilisateur</returns>
-        public static string EntreeUtilisateur() => Console.ReadLine();
 
         /// <summary>Attend quelconque entree de l'utilisateur.</summary>
         public static void AttenteUtilisateur() {
@@ -106,22 +101,22 @@ namespace Demineur {
         public static void EntreeIncorrecte() => Console.WriteLine("\n Entrée incorrecte. Veuillez réessayer.");
 
         /// <summary>Demande à l'utlisateur de choisir un joueur dans la liste pour jouer une partie.</summary>
-        public static void DemandeJoueur() => Console.WriteLine("Choisissez un joueur dans la liste ci-dessous pour jouer la partie :");
+        public static void ChoixJoueur() => Console.WriteLine("Choisissez un joueur dans la liste ci-dessous pour jouer la partie :");
 
         /// <summary>Affiche un joueur avec son numéro de choix dans la liste.</summary>
         /// <param name="choix">Numéro du choix</param>
         /// <param name="joueur">Nom du joueur</param>
         public static void AfficherJoueur(int choix, string joueur) => Console.WriteLine(choix + ". " + joueur);
 
-        /// <summary>Informe l'utilisateur qu'il manque de joueurs dans la liste pour commencer une partie.</summary>
-        public static void PartieImpossible() => Console.WriteLine("\n Il n'y a pas assez de joueurs disponibles pour commencer une partie.");
+        /// <summary>Informe l'utilisateur qu'il manque de joueurs dans la liste.</summary>
+        public static void PartieImpossible() => Console.WriteLine("\n Il n'y a pas assez de joueurs disponibles pour effectuer cette action.");
 
         /// <summary>Demande à l'utilisateur d'entrer un nom pour un nouveau joueur.</summary>
         public static void NouveauJoueur() => Console.Write("\n Entrez un nom pour un nouveau joueur :");
         /// <summary>Demande à l'utilisateur d'entrer un numéro de joueur pour le supprimer de la liste de joueurs.</summary>
         public static string SupprimerJoueur() {
             Console.Write("Veuillez entrer le numéro du joueur que vous désirez supprimer : ");
-            return EntreeUtilisateur();
+            return Console.ReadLine();
         }
 
         /// <summary>Informe le joueur que le nouveau joueur a été ajouté.</summary>
@@ -142,15 +137,15 @@ namespace Demineur {
         public static void AfficherClassement(int position, string joueur, long temps) => Console.WriteLine("#" + position + "- " + joueur + "\t" + TimeSpan.FromMilliseconds(temps).TotalSeconds + " secondes");
         /// <summary>Valide avec l'utilisateur s'il désire vraiment quitter l'application en cours.</summary>
         public static string ValidationQuitter() {
-            Console.WriteLine("Souhaitez-vous vraiment quitter le jeu de Démineur ?" + "\n");
+            Console.WriteLine("Souhaitez-vous vraiment quitter et sauvegarder le jeu de Démineur ?" + "\n");
             Console.Write("(oui / non) :");
-            return EntreeUtilisateur().ToLower();
+            return Console.ReadLine().ToLower();
         }
         /// <summary>Valide avec l'utilisateur s'il désire vraiment supprimer un joueur.</summary>
         public static string ValidationSupprimer(string nom) {
-            Console.WriteLine("Souhaitez-vous vraiment supprimer ?" + nom + "\n");
+            Console.WriteLine("Souhaitez-vous vraiment supprimer :" + nom + " ? \n");
             Console.Write("(oui / non) :");
-            return EntreeUtilisateur().ToLower();
+            return Console.ReadLine().ToLower();
         }
         /// <summary>Confirme la fermeture de l'application</summary>
         public static Boolean Confirmer(string validation) {
@@ -162,6 +157,10 @@ namespace Demineur {
         public static void EffaceEcran() {
             Console.Clear();    
         }
+
+        /// <summary>Récupère l'entrée de l'utilisateur.</summary>
+        /// <returns>Retourne l'entrée de l'utilisateur</returns>
+        public static string EntreeUtilisateur() => Console.ReadLine();
     }
     
 }

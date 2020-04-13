@@ -6,8 +6,8 @@ namespace Demineur {
     public class Partie {
         readonly Joueur joueur;
         Plateau plateau;
-        Difficulte difficulte;
-        Taille taille;
+        readonly Difficulte difficulte;
+        readonly Taille taille;
 
         /// <summary>Niveau de difficulté de la partie</summary>
         public enum Difficulte : byte {
@@ -54,8 +54,7 @@ namespace Demineur {
         /// <summary>Joue la partie.</summary>
         public void Jouer() {
             plateau = new Plateau((byte)taille);
-            
-            Stopwatch chrono = new Stopwatch();
+            Stopwatch chrono = new Stopwatch(); // Chronomètre la durée de la partie d'un joueur
 
             if (joueur != null)
                 chrono.Start();
@@ -67,7 +66,7 @@ namespace Demineur {
                 if (joueur != null) {
                     chrono.Stop();
                     if (chrono.ElapsedMilliseconds < joueur[difficulte, taille])
-                        joueur[difficulte, taille] = chrono.ElapsedMilliseconds;
+                        joueur[difficulte, taille] = chrono.ElapsedMilliseconds; // Mets à jour le meilleur temps du joueur
                 }
                 MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
                 MenuPartie.PartieGagne();
@@ -90,7 +89,7 @@ namespace Demineur {
             for (int i = 0; i < nbMines;) {
                 aleaLigne = alea.Next((byte)taille);
                 aleaCol = alea.Next((byte)taille);
-                // Évalue si les indices aléatoires sont les mêmes que les indices à jouer puis si ceux-ci ont déjà une mine
+                // Ajoute une mine si les indices aléatoires ne sont pas les mêmes que les indices à jouer puis si ceux-ci n'ont pas déjà une mine
                 if ((aleaLigne != ligne || aleaCol != col) && plateau.PlacerMine(aleaLigne, aleaCol))
                     i++;                    
             }
@@ -109,17 +108,16 @@ namespace Demineur {
         /// <summary>Exécute un tour de la partie.</summary>
         void JouerTour() {
             MenuPartie.AfficherPlateau(plateau.ToString(), plateau.Largeur);
-            MenuPartie.DemandeJoueur();
-
+            
             int ligne, col; // Ligne et la colonne à jouer
 
             if (joueur == null) {
                 int coups = IA.JouerCoups(plateau.ToString(), plateau.Largeur);
                 ligne = coups / plateau.Largeur;
                 col = coups % plateau.Largeur;
-                Console.WriteLine((col + 1) + " " + (ligne + 1));
             } else {
                 do {
+                    MenuPartie.DemandeJoueur();
                     ligne = col = 0;
                     string[] entree = MenuPartie.EntreeJoueur().Split(' ');
 

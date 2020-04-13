@@ -12,11 +12,6 @@ namespace Demineur {
             OuvrirJoueurs();
         }
 
-        /// <summary>Sauvegarde lors de la fin du jeu de démineur.</summary>
-        ~Demineur() {
-            SauvegarderJoueurs();
-        }
-
         /// <summary>Démarre l'exécution du jeu de démineur.</summary>
         public void Demarrer() {
             bool sortie = true;
@@ -53,8 +48,11 @@ namespace Demineur {
                                     break;
                             }
                         }
-                        if (partie != null)
+                        if (partie != null) { 
                             partie.Jouer();
+                            MenuPrincipal.AttenteUtilisateur();
+                        }
+                            
 
                         break;
                     case "2":
@@ -64,7 +62,12 @@ namespace Demineur {
                                 NouveauJoueur();
                                 break;
                             case "2":
-                                SupprimerJoueur();
+                                if (joueurs.Count > 0)
+                                    SupprimerJoueur();
+                                else {
+                                    MenuPrincipal.PartieImpossible();
+                                    MenuPrincipal.AttenteUtilisateur();
+                                }
                                 break;
                             case "3":
                                 break;
@@ -79,8 +82,10 @@ namespace Demineur {
 
                     case "4":
                         MenuPrincipal.EffaceEcran();
-                        if (MenuPrincipal.Confirmer(MenuPrincipal.ValidationQuitter()))
+                        if (MenuPrincipal.Confirmer(MenuPrincipal.ValidationQuitter())) {
+                            SauvegarderJoueurs();
                             sortie = false;
+                        }
                         break;
                 }
 
@@ -164,7 +169,7 @@ namespace Demineur {
             Joueur joueur = null;
             AfficherJoueurs();
             while (joueur == null) {
-                MenuPrincipal.DemandeJoueur();
+                MenuPrincipal.ChoixJoueur();
 
                 try {
                     joueur = joueurs[int.Parse(MenuPrincipal.EntreeUtilisateur()) - 1];

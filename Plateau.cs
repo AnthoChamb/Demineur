@@ -5,9 +5,9 @@ using System.Text;
 namespace Demineur {
     /// <summary>Classe d'un plateau de jeu de démineur</summary>
     public class Plateau {
-        Case[,] plateau;
+        readonly Case[,] plateau;
 
-        /// <summary>Crée un plateau de jeu de démineur de la taille spécifiée.</summary>
+        /// <summary>Crée un plateau de jeu de démineur carré de la taille spécifiée.</summary>
         /// <param name="taille">Taille du plateau de jeu</param>
         public Plateau(byte taille) {
             plateau = new Case[taille, taille];
@@ -36,20 +36,20 @@ namespace Demineur {
             return chaine;
         }
 
-        /// <summary>Place une mine aux indices précisés et ajuste le compte de mines autours. Évalue si cette case contient déjà une mine.</summary>
+        /// <summary>Place une mine aux indices précisés et ajuste le compte de mines autours. Évalue d'abord si cette case ne contient pas déjà une mine.</summary>
         /// <param name="ligne">Indice de la ligne de la mine à placer</param>
         /// <param name="col">Indice de la colonne de la mine à placer</param>
-        /// <returns>Retourne si cette case contient déjà une mine</returns>
+        /// <returns>Retourne si cette case ne contient pas déjà une mine</returns>
         public bool PlacerMine(int ligne, int col) {
             if (plateau[ligne, col].Mine)
-                return false;
+                return false; // Évalue d'abord si cette case ne contient pas déjà une mine
 
-            plateau[ligne, col].Mine = true;
+            plateau[ligne, col].Mine = true; // Place la mine
             for (sbyte i = -1; i <= 1; i++)
                 for (sbyte j = -1; j <= 1; j++)
                     try {
                         if (!plateau[ligne + i, col + j].Mine)
-                            plateau[ligne + i, col + j].AjouteMine();
+                            plateau[ligne + i, col + j].AjouteMine(); // Ajuste le compte de mines
                     } catch (IndexOutOfRangeException) { }
             return true;
         }
