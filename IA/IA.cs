@@ -17,7 +17,7 @@ namespace Demineur {
 
             char[,] cases = ConvertirChaine(plateau, largeur);
 
-            int compte, connues, minCompte = -1, minConnues = -1, coups = -1;
+            int compte, connues, minCompte = -1, maxConnues = -1, coups = -1;
 
             for (int ligne = 0; ligne < cases.GetLength(0); ligne++) {
                 for (int col = 0; col < cases.GetLength(1); col++) {
@@ -32,11 +32,11 @@ namespace Demineur {
                                         compte += int.Parse(cases[ligne + i, col + j].ToString());
                                     }
                                 } catch (IndexOutOfRangeException) { } // Évite les exceptions levés par une case se situant en bordure du plateau 
-                        if (connues > 0 && ((compte < minCompte || minCompte == -1) || (compte == minCompte && connues < minConnues))) {
+                        if (connues > 0 && ((compte < minCompte || minCompte == -1) || (compte == minCompte && connues > maxConnues))) {
                             if (compte < minCompte || minCompte == -1)
                                 minCompte = compte; // Garde le compte du nombre de mines autour des cases connues dans le voisinage du coup à jouer
 
-                            minConnues = connues; // Garde le nombre de cases connues dans le voisinage du coup à jouer
+                            maxConnues = connues; // Garde le nombre de cases connues dans le voisinage du coup à jouer
                             coups = ligne * largeur + col; // Garde l'indice sur une dimension du coup à jouer
                         }
                     }
