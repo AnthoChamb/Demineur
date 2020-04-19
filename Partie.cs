@@ -80,8 +80,9 @@ namespace Demineur {
         /// <summary>Disperse les mines sur le plateau de jeu en excluant les indices à jouer.</summary>
         /// <param name="ligne">Indice de la ligne à jouer</param>
         /// <param name="col">Indice de la colonne à jouer</param>
+        /// <remarks>La notation Grand-O de cette méthode est d'au moins O(9n) où n représente le nombre de mines à disperser, sa complexité pouvant varié dû à sa nature aléatoire.</remarks>
         void DisperserMines(int ligne, int col) {
-            double nbMines = (double)difficulte / 100 * (byte)taille * (byte)taille;
+            double nbMines = (double)difficulte / 100 * (byte)taille * (byte)taille; // Nombre de mines à disperser
             Random alea = new Random();
 
             int aleaLigne, aleaCol; // Indices générés aléatoirement
@@ -90,19 +91,10 @@ namespace Demineur {
                 aleaLigne = alea.Next((byte)taille);
                 aleaCol = alea.Next((byte)taille);
                 // Ajoute une mine si les indices aléatoires ne sont pas les mêmes que les indices à jouer puis si ceux-ci n'ont pas déjà une mine
-                if ((aleaLigne != ligne || aleaCol != col) && plateau.PlacerMine(aleaLigne, aleaCol))
+                if ((aleaLigne != ligne || aleaCol != col) && plateau.PlacerMine(aleaLigne, aleaCol)) // Plateau.PlacerMine(int ligne, int col) cache une complexité O(9)
                     i++;                    
             }
                 
-        }
-
-        /// <summary>Évalue si il faut jouer le premier coup de la partie.</summary>
-        /// <returns>Retourne si il faut jouer le premier coup de la partie</returns>
-        bool PremierCoup() {
-            foreach (char element in plateau.ToString())
-                if (element != '.')
-                    return false;
-            return true;
         }
 
         /// <summary>Exécute un tour de la partie.</summary>
@@ -111,11 +103,11 @@ namespace Demineur {
             
             int ligne, col; // Ligne et la colonne à jouer
 
-            if (joueur == null) {
-                int coups = IA.JouerCoups(plateau.ToString(), plateau.Largeur);
+            if (joueur == null) { // Intelligence artificielle
+                int coups = IA.JouerCoup(plateau.ToString(), plateau.Largeur);
                 ligne = coups / plateau.Largeur;
                 col = coups % plateau.Largeur;
-            } else {
+            } else { // Joueur humain
                 do {
                     MenuPartie.DemandeJoueur();
                     ligne = col = 0;
@@ -123,27 +115,27 @@ namespace Demineur {
 
                     try {
                         col = int.Parse(entree[0]);
-                        if (col < 1 || col > plateau.Largeur)
+                        if (col < 1 || col > plateau.Largeur) // L'entrée de l'utilisateur n'est pas un indice du plateau valide
                             MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
-                    } catch (FormatException) {
+                    } catch (FormatException) { // L'entrée de l'utilisateur n'est pas un nombre entier
                         MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
-                    } catch (OverflowException) {
+                    } catch (OverflowException) { // L'entrée de l'utilisateur dépasse la valeur d'un int
                         MenuPartie.EntreeIncorrecte("colonne", plateau.Largeur);
                     }
 
                     try {
                         ligne = int.Parse(entree[1]);
-                        if (ligne < 1 || ligne > plateau.Largeur) {
+                        if (ligne < 1 || ligne > plateau.Largeur) { // L'entrée de l'utilisateur n'est pas un indice du plateau valide
                             MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
                         } else if (col <= plateau.Largeur && col > 0 && plateau[ligne - 1, col - 1].Ouverte) { // La case désirée ne peut pas être déjà ouverte, cela est vérifié que si le numéro de colonne est valide
                             MenuPartie.CaseOuverte(ligne, col);
                             col = 0; // Le numéro de colonne ne remplit plus la condition de sortie
                         }
-                    } catch (FormatException) {
+                    } catch (FormatException) { // L'entrée de l'utilisateur n'est pas un nombre entier
                         MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
-                    } catch (OverflowException) {
+                    } catch (OverflowException) { // L'entrée de l'utilisateur dépasse la valeur d'un int
                         MenuPartie.EntreeIncorrecte("ligne", plateau.Largeur);
-                    } catch (IndexOutOfRangeException) {
+                    } catch (IndexOutOfRangeException) { // L'entrée de l'utilisateur ne contient pas une espace
                         MenuPartie.ErreurEspace();
                     }
                 } while (col < 1 || col > plateau.Largeur || ligne < 1 || ligne > plateau.Largeur); // La colonne et la ligne désirée doit être un nombre valide pour continuer
@@ -152,7 +144,7 @@ namespace Demineur {
                 col--;
             }
 
-            if (PremierCoup())
+            if (plateau.PremierCoup())
                 DisperserMines(ligne, col);
 
             plateau.OuvrirCase(ligne, col);

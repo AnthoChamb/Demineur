@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Demineur {
+﻿namespace Demineur {
     /// <summary>Classe d'une case.</summary>
     public class Case {
         bool mine, ouverte;
@@ -24,7 +20,7 @@ namespace Demineur {
         public byte Compte { get => compte; }
 
         /// <summary>Incrémente le compte de mines autour de la case.</summary>
-        public void AjouteMine() => compte++;
+        public void IncrementeCompte() => compte++;
 
         /// <summary>Une représentation en chaine de la case.</summary>
         /// <example>Une case ouverte retourne son compte de mines, une mine ouverte retourne un "X" et toutes cases fermées retournent un "."</example>
